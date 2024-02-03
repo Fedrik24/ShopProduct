@@ -1,0 +1,25 @@
+﻿@page "/"
+@using Radzen
+@inject NavigationManager NavManager
+
+
+<PageTitle>Login</PageTitle>
+
+<h3>Login</h3>
+
+<RadzenButton Text="Hello world!" />
+
+<RadzenLogin AllowRegister="true" AllowResetPassword="true"
+             Login=@OnLogin />
+
+@code 
+{
+    string userName = "admin";
+    string password = "admin";
+
+    void OnLogin(LoginArgs args)
+    {
+        Console.WriteLine($"Username: {args.Username} and password: {args.Password}");
+        NavManager.NavigateTo("/index");
+    }
+}
