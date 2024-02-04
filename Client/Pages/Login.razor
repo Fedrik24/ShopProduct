@@ -1,13 +1,23 @@
 ﻿@page "/"
 @using Radzen
+@using System.Text.Json
+@using System.Text.Json.Serialization
+@using ShopProduct.Client.Utility
+@using ShopProduct.Shared
 @inject NavigationManager NavManager
-
+@inject HttpClient Http
+@inject DataService DataService
 
 <PageTitle>Login</PageTitle>
 
-<h3>Login</h3>
+<h3>Login Test</h3>
 
-<RadzenButton Text="Hello world!" />
+@if (userIdLogin != null)
+{
+    <h4>USER ID : @userIdLogin.UserId</h4>
+}
+
+<RadzenButton Text="Hello world! " />
 
 <RadzenLogin AllowRegister="true" AllowResetPassword="true"
              Login=@OnLogin />
@@ -17,9 +27,22 @@
     string userName = "admin";
     string password = "admin";
 
+    public UserIdLogin userIdLogin;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        FetchData();
+    }
+
+    private async Task FetchData()
+    {
+        userIdLogin = await Http.GetFromJsonAsync<UserIdLogin>("Product");
+    }
+
     void OnLogin(LoginArgs args)
     {
         Console.WriteLine($"Username: {args.Username} and password: {args.Password}");
-        NavManager.NavigateTo("/index");
+        NavManager.NavigateTo("/index.html");
     }
 }

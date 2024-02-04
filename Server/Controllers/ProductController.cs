@@ -8,16 +8,16 @@ namespace ShopProduct.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ProductService : ControllerBase
+    public class ProductController : ControllerBase
     {
         private readonly IMediator _mediator;
 
-        public ProductService(IMediator mediator)
+        public ProductController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
-        [HttpGet()]
+        [HttpGet]
         public async Task<IActionResult> GetProductData()
         {
             var query = new GetProductDataAsyncQuery();
