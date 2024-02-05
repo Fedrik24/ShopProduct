@@ -18,9 +18,10 @@ namespace ShopProduct.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetProductData()
+        public async Task<IActionResult> Login([FromHeader(Name = "userId")]int userId, 
+            [FromHeader(Name = "password")]string username)
         {
-            var query = new GetProductDataAsyncQuery();
+            var query = new UserLoginQuery(userId, username);
             var result = await _mediator.Send(query);
             return result;
         }

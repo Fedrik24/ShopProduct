@@ -4,6 +4,6 @@ namespace ShopProduct.Server.Services
 {
     public interface IUserService
     {
-        Task<UserIdLogin> GetUser();
+        Task<UserIdLogin> GetUserInfo(int userId);
     }
 }

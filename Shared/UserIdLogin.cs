@@ -9,5 +9,6 @@ namespace ShopProduct.Shared
     public class UserIdLogin
     {
         public int UserId { get; set; }
+        public string Password { get; set; }
     }
 }

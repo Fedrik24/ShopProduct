@@ -13,14 +13,13 @@ namespace ShopProduct.Server.Services
             this.userRepository = userRepository;
         }
 
-        public async Task<UserIdLogin> GetUser()
+        public async Task<UserIdLogin> GetUserInfo(int userId)
         {
             try
             {
-                Console.WriteLine($"Trying to get user");
                 UserIdLogin login = new UserIdLogin();
-                login.UserId = await userRepository.GetUser();
-                Console.WriteLine($"login : {login.UserId}");
+                login.UserId = await userRepository.GetUserId(userId);
+                login.Password = await userRepository.GetUserPassword()
                 return login;
             }
             catch (Exception ex)

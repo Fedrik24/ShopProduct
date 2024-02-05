@@ -14,19 +14,25 @@ namespace ShopProduct.Server.Repository
             this.dbContext = dbContext;
         }
 
-        public async Task<int> GetUser()
-        {
-            try
-            {
-                DbConnection dbConnection = dbContext.Connection;
-                var query = @"SELECT id FROM users";
-                var result = await dbConnection.QueryFirstAsync<int>(query);
-                return result;
-            }catch (Exception ex)
-            {
-                return 0;
-            }
+		public async Task<bool> CheckUserPassword(string password)
+		{
 
+			DbConnection dbConnection = dbContext.Connection;
+            DefaultTypeMap.MatchNamesWithUnderscores = true;
+			var param = new { password = password };
+			var query = @"SELECT password FROM users";
+			var result = await dbConnection.ExecuteAsync(query);
+			return result == 1;
+		}
+
+		public async Task<int> GetUserId(int userId)
+        {
+
+            DbConnection dbConnection = dbContext.Connection;
+            var param = new { user_id = userId };
+            var query = @"SELECT user_id FROM users";
+            var result = await dbConnection.QueryFirstAsync<int>(query);
+            return result;
         }
     }
 }
