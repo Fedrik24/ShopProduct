@@ -21,12 +21,12 @@ namespace ShopProduct.Server.Handler.Service
         public async Task<IActionResult> Handle(UserLoginQuery request, CancellationToken cancellationToken)
         {
             // Check is user exist or not
-            var isUserIdExist = userService.GetUserInfo(request.userId);
-            if(isUserIdExist == null)
+            var userInfo = userService.GetUserInfo(request.userId, request.password);
+            if(userInfo == null)
             {
                 return new BadRequestResult();
             }
-            return new OkObjectResult(result);
+            return new OkObjectResult(null);
         }
     }
 }

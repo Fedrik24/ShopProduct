@@ -13,13 +13,14 @@ namespace ShopProduct.Server.Services
             this.userRepository = userRepository;
         }
 
-        public async Task<UserIdLogin> GetUserInfo(int userId)
+        // Ganti ke Authenticate saja. 
+        public async Task<UserIdLogin> GetUserInfo(int userId, string password)
         {
             try
             {
                 UserIdLogin login = new UserIdLogin();
                 login.UserId = await userRepository.GetUserId(userId);
-                login.Password = await userRepository.GetUserPassword()
+                var checkPassword = await userRepository.CheckUserPassword(password);
                 return login;
             }
             catch (Exception ex)

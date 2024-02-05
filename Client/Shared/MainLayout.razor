@@ -1,4 +1,7 @@
 ﻿@inherits LayoutComponentBase
+@using ShopProduct.Client.Utility
+@inject DataService DataService
+@inject NavigationManager NavManager
 
 <div class="page">
     <div class="sidebar">
@@ -15,3 +18,23 @@
         </article>
     </main>
 </div>
+
+@code{
+
+    public int userId { get; set; }
+
+    // Get User, If user hasn't log'in, move back to login.html
+    protected override async Task OnInitializedAsync()
+    {
+        FetchData();
+    }
+
+    private async Task FetchData()
+    {
+        userId = await DataService.GetAsync<int>($"Login/{userId}");
+        if(userId == 0)
+        {
+            NavManager.NavigateTo("/Login");
+        }
+    }
+}
