@@ -1,4 +1,6 @@
 ﻿@page "/Product"
+
+
 <h3>Product Pages</h3>
 
 <div>
@@ -6,7 +8,62 @@
     <RadzenButton onclick="@RemoveAdd">Remove</RadzenButton>
 </div>
 
+<div>
+    <h5>TESTING RADZEN</h5>
+
+    <RadzenCard Style="width: 100%; padding: 0;">
+        <RadzenRow Gap="0">
+            <RadzenColumn Size="12" SizeLG="3" Class="rz-p-4 product-title">
+                <p>ID</p>
+                <RadzenRow Gap="0">
+                    <RadzenColumn Size="12" SizeMD="6" SizeLG="2">
+                        <p>Testing Child Columnd</p>
+                    </RadzenColumn>
+                </RadzenRow>
+            </RadzenColumn>
+            <RadzenColumn Size="12" SizeLG="3" Class="rz-p-4 product-title">
+                <RadzenRow Gap="0">
+                    <RadzenColumn Size="12" SizeMD="6" SizeLG="2">
+                        <p>Testing Child Columnd</p>
+                    </RadzenColumn>
+                </RadzenRow>
+            </RadzenColumn>
+            <RadzenColumn Size="12" SizeLG="3" Class="rz-p-4 product-title">
+                <RadzenRow Gap="0">
+                    <RadzenColumn Size="12" SizeMD="6" SizeLG="2">
+                        <p>Testing Child Columnd</p>
+                    </RadzenColumn>
+                </RadzenRow>
+            </RadzenColumn>
+            <RadzenColumn Size="12" SizeLG="3" Class="rz-p-4 product-title">
+                <RadzenRow Gap="0">
+                    <RadzenColumn Size="12" SizeMD="6" SizeLG="2">
+                        <p>Testing Child Columnd</p>
+                    </RadzenColumn>
+                </RadzenRow>
+            </RadzenColumn>
+        </RadzenRow>
+    </RadzenCard>
+
+</div>
+
+<style>
+    .product-title {
+        min-height: 72px;
+        background-color: var(--rz-secondary-lighter);
+    }
+
+    .price-badge {
+        font-size: 16px;
+        font-weight: bold;
+        line-height: 20px;
+        padding: 8px;
+    }
+</style>
+
 @code {
+
+    IQueryable<int> products;
 
     private void AddProduct()
     {
