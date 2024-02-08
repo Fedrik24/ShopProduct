@@ -6,12 +6,10 @@
 @using ShopProduct.Client.Utility
 @using ShopProduct.Shared
 @using System.Net
+@inject ILocalStorageService _localstorage;
 @inject NavigationManager NavManager
 @inject HttpClient Http
 @inject DataService DataService
-@inject AuthStateProvider AuthStateProvider
-@inject ILocalStorageService LocalStorage
-@inject IConfiguration Configuration
 
 <PageTitle>Login</PageTitle>
 
@@ -33,7 +31,7 @@
     string password = "local";
 
     public UserLoginData userIdLogin;
-    public string Token { get; set; }
+    public string Token = "123";
 
 
     void OnLogin(LoginArgs args)
@@ -42,12 +40,6 @@
 
     }
 
-    async Task HandleLogin()
-    {
-        Token = "MyTokenTesting213";
-        await LocalStorage.SetItemAsync("token", Token);
-        await AuthStateProvider.GetAuthenticationStateAsync();
-    }
 
     private async void LoginAuthenticate(string username, string password)
     {
@@ -60,7 +52,7 @@
 
         try
         {
-            UserLoginData result = await DataService.LoginService<UserLoginData>("Login", HttpMethod.Get,headers);
+            UserLoginData result = await DataService.Service<UserLoginData>("Login", HttpMethod.Get,headers);
             if (result != null)
             {
                 Console.WriteLine(result.Username, result.Password);
@@ -69,10 +61,11 @@
                     { "userId", $"{result.UserId}" },
                     { "token", $"{Token}" }
                 };
-                ResponseCode responseCode = await DataService.LoginService<ResponseCode>("Login", HttpMethod.Post, loginHeaders);
+                ResponseCode responseCode = await DataService.Service<ResponseCode>("Login", HttpMethod.Post, loginHeaders);
                 if (!string.IsNullOrEmpty(responseCode.Message))
                 {
-                    NavManager.NavigateTo("/index");
+                    await _localstorage.SetItemAsync("userId", result.UserId);
+                    NavManager.NavigateTo("/");
                 }
             }
         }

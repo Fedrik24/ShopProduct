@@ -16,7 +16,7 @@ namespace ShopProduct.Client.Utility
             _httpClient = httpClient;
         }
 
-        public async Task<T> LoginService<T>(string url, HttpMethod httpMethod, Dictionary<string, string> headers = null)
+        public async Task<T> Service<T>(string url, HttpMethod httpMethod, Dictionary<string, string> headers = null)
         {
             var request = new HttpRequestMessage(httpMethod, url);
 

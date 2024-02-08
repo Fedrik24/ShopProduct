@@ -1,6 +1,8 @@
 ﻿@inherits LayoutComponentBase
+@using Blazored.LocalStorage
 @using ShopProduct.Client.Utility
 @using ShopProduct.Shared
+@inject ILocalStorageService _localstorage;
 @inject DataService DataService
 @inject NavigationManager NavManager
 
@@ -30,11 +32,16 @@
         {
             { "userId", $"1" },
         };
-        var token = await DataService.LoginService<string>("Login/Token", HttpMethod.Get, loginHeaders);
-
-        if (string.IsNullOrEmpty(token))
+        userIdLogin = await DataService.Service<UserLoginData>("Login/Token", HttpMethod.Get, loginHeaders);
+        var userId = await _localstorage.GetItemAsStringAsync("userId");
+        if (string.IsNullOrEmpty(userId))
         {
-            NavManager.NavigateTo("/login");
+            NavManager.NavigateTo("/Login");
+        }
+        else
+        {
+            await _localstorage.RemoveItemAsync($"userId");
+            NavManager.NavigateTo("/Login");
         }
     }
 }

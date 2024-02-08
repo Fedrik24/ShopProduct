@@ -1,4 +1,7 @@
 ﻿@page "/Product"
+@using ShopProduct.Client.Utility
+@using ShopProduct.Shared
+@inject DataService dataService
 
 
 <h3>Product Pages</h3>
@@ -64,6 +67,24 @@
 @code {
 
     IQueryable<int> products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetProduct();
+    }
+
+    private async Task GetProduct()
+    {
+        var product = await dataService.Service<List<ProductItems>>("Product", HttpMethod.Get);
+        foreach(var item in product)
+        {
+            Console.WriteLine($"item ID : {item.Id}");
+            Console.WriteLine($"item NAME : {item.ProductName}");
+            Console.WriteLine($"item TYPE : {item.ProductType}");
+            Console.WriteLine($"item PRICE : {item.Price}");
+            Console.WriteLine($"item AMOUNT : {item.Amount}");
+        }
+    }
 
     private void AddProduct()
     {

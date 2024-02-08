@@ -16,7 +16,8 @@ builder.Services.AddMediatR(typeof(IAssemblyMarker).GetTypeInfo().Assembly);
 builder.Services.AddTransient<IDbContext, DatabaseConnection>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
-
+builder.Services.AddTransient<IProductService, ProductService>();
+builder.Services.AddTransient<IProductRepository, ProductRepository>();
 builder.Services.AddDbContext<DatabaseConnection>(options =>
 {
     var database = builder.Configuration.GetConnectionString("PostgrestSql");
