@@ -19,7 +19,7 @@ namespace ShopProduct.Client.Utility
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            string token = await _localStorage.GetItemAsStringAsync("token");
+            string token = await _localStorage.GetItemAsStringAsync("Testing213");
 
             var identity = new ClaimsIdentity();
             _http.DefaultRequestHeaders.Authorization = null;
