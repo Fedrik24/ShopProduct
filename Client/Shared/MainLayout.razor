@@ -1,5 +1,6 @@
 ﻿@inherits LayoutComponentBase
 @using ShopProduct.Client.Utility
+@using ShopProduct.Shared
 @inject DataService DataService
 @inject NavigationManager NavManager
 
@@ -20,21 +21,20 @@
 </div>
 
 @code{
-
-    public int userId { get; set; }
+    public UserLoginData userIdLogin;
 
     // Get User, If user hasn't log'in, move back to login.html
     protected override async Task OnInitializedAsync()
     {
-        FetchData();
-    }
-
-    private async Task FetchData()
-    {
-        userId = await DataService.GetAsync<int>($"Login/{userId}");
-        if(userId == 0)
+        Dictionary<string, string> loginHeaders = new Dictionary<string, string>
         {
-            NavManager.NavigateTo("/Login");
+            { "userId", $"1" },
+        };
+        var token = await DataService.LoginService<string>("Login/Token", HttpMethod.Get, loginHeaders);
+
+        if (string.IsNullOrEmpty(token))
+        {
+            NavManager.NavigateTo("/login");
         }
     }
 }

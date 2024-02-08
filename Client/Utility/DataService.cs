@@ -1,4 +1,6 @@
-﻿using System.Net.Http;
+﻿using ShopProduct.Shared;
+using System.Net;
+using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -14,10 +16,20 @@ namespace ShopProduct.Client.Utility
             _httpClient = httpClient;
         }
 
-        public async Task<T> GetAsync<T>(string url)
+        public async Task<T> LoginService<T>(string url, HttpMethod httpMethod, Dictionary<string, string> headers = null)
         {
-            var response = await _httpClient.GetAsync(url);
-                                                                    
+            var request = new HttpRequestMessage(httpMethod, url);
+
+            if (headers != null)
+            {
+                foreach (var header in headers)
+                {
+                    request.Headers.Add(header.Key, header.Value);
+                }
+            }
+
+            var response = await _httpClient.SendAsync(request);
+
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
@@ -25,7 +37,8 @@ namespace ShopProduct.Client.Utility
                 {
                     return JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
-                }catch(Exception ex)
+                }
+                catch (Exception ex)
                 {
                     Console.WriteLine(ex.ToString());
                     return default;
@@ -37,6 +50,5 @@ namespace ShopProduct.Client.Utility
                 return default;
             }
         }
-
     }
 }

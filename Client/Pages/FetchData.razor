@@ -16,14 +16,14 @@
 else
 {
     <p>userId</p>
-    <p>@userId.UserId</p>
+    <p>@userId.Username</p>
 }
 
 @code {
-    private UserIdLogin userId;
+    private UserLoginData userId;
 
     protected async override Task OnInitializedAsync()
     {
-        userId = await DataService.GetAsync<UserIdLogin>("Product");
+        //userId = await DataService.GetAsync<UserLogin>("Product");
     }
 }

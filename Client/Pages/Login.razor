@@ -1,12 +1,17 @@
 ﻿@page "/Login"
+@using Blazored.LocalStorage
 @using Radzen
 @using System.Text.Json
 @using System.Text.Json.Serialization
 @using ShopProduct.Client.Utility
 @using ShopProduct.Shared
+@using System.Net
 @inject NavigationManager NavManager
 @inject HttpClient Http
 @inject DataService DataService
+@inject AuthStateProvider AuthStateProvider
+@inject ILocalStorageService LocalStorage
+@inject IConfiguration Configuration
 
 <PageTitle>Login</PageTitle>
 
@@ -14,7 +19,7 @@
 
 @if (userIdLogin != null)
 {
-    <h4>USER ID : @userIdLogin.UserId</h4>
+    <h4>USER ID : @userIdLogin.Username</h4>
 }
 
 <RadzenButton Text="Hello world! " />
@@ -25,24 +30,56 @@
 @code 
 {
     string userName = "admin";
-    string password = "admin";
+    string password = "local";
 
-    public UserIdLogin userIdLogin;
+    public UserLoginData userIdLogin;
+    public string Token { get; set; }
 
-
-    protected override async Task OnInitializedAsync()
-    {
-        FetchData();
-    }
-
-    private async Task FetchData()
-    {
-        userIdLogin = await Http.GetFromJsonAsync<UserIdLogin>("Product");
-    }
 
     void OnLogin(LoginArgs args)
     {
-        Console.WriteLine($"Username: {args.Username} and password: {args.Password}");
-        NavManager.NavigateTo("/index.html");
+        LoginAuthenticate(args.Username, args.Password);
+
+    }
+
+    async Task HandleLogin()
+    {
+        Token = "MyTokenTesting213";
+        await LocalStorage.SetItemAsync("token", Token);
+        await AuthStateProvider.GetAuthenticationStateAsync();
+    }
+
+    private async void LoginAuthenticate(string username, string password)
+    {
+        Console.WriteLine($"LOGIN AUTHENTICATE");
+        Dictionary<string, string> headers = new Dictionary<string, string>
+        { 
+            { "username", $"{username}" },
+            { "password", $"{password}" }
+        };
+
+        try
+        {
+            UserLoginData result = await DataService.LoginService<UserLoginData>("Login", HttpMethod.Get,headers);
+            if (result != null)
+            {
+                Console.WriteLine(result.Username, result.Password);
+                Dictionary<string, string> loginHeaders = new Dictionary<string, string>
+                {
+                    { "userId", $"{result.UserId}" },
+                    { "token", $"{Token}" }
+                };
+                ResponseCode responseCode = await DataService.LoginService<ResponseCode>("Login", HttpMethod.Post, loginHeaders);
+                if (!string.IsNullOrEmpty(responseCode.Message))
+                {
+                    NavManager.NavigateTo("/index");
+                }
+            }
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine($"Exception : {e}");
+        }
+
     }
 }
