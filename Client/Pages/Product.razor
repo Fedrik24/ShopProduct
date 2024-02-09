@@ -2,8 +2,9 @@
 @using Radzen
 @using ShopProduct.Client.Utility
 @using ShopProduct.Shared
+@using System.Text.Json
 @inject DataService dataService
-
+@inject IJSRuntime JSRuntime
 
 <h3>Product Pages</h3>
 
@@ -28,12 +29,10 @@
                 <RadzenDataGridColumn TItem="ProductItems" Property="Price" Title="Price" Width="120px" />
                 <RadzenDataGridColumn TItem="ProductItems" Property="Amount" Title="Amount" FormatString="{0:d}" Width="160px" />
                 <RadzenDataGridColumn TItem="ProductItems" Context="ProductItems" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
-                    <Template Context="ProductItems">
-                        <RadzenButton Icon="add_circle_outline" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => AddProduct(ProductItems))" @onclick:stopPropagation="true">
+                    <Template Context="Items">
+                        <RadzenButton Icon="add_circle_outline" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => AddProduct(Items))" @onclick:stopPropagation="true">
                         </RadzenButton>
-                        <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => RemoveAdd())" @onclick:stopPropagation="true">
-                        </RadzenButton>
-                    </Template>
+                    </Template>             
                 </RadzenDataGridColumn>
 
             </Columns>
@@ -44,14 +43,21 @@
 <div>
     <p>Testing</p>
     <p>UserHistory Purchase Data</p>
+    <RadzenButton Text="Refresh" Click="@RefreshItems"></RadzenButton>
     <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="5" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
-                    Data="@userProductItems" TItem="ProductItems" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
+                    Data="@userProductItem" TItem="ProductItems" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
         <Columns>
             <RadzenDataGridColumn TItem="ProductItems" Property="Id" Title="Id" Frozen="true" Width="160px" />
             <RadzenDataGridColumn TItem="ProductItems" Property="ProductName" Title="Product Name" Width="160px" />
             <RadzenDataGridColumn TItem="ProductItems" Property="ProductType" Title="Product Type" Width="200px" />
             <RadzenDataGridColumn TItem="ProductItems" Property="Price" Title="Price" Width="120px" />
             <RadzenDataGridColumn TItem="ProductItems" Property="Amount" Title="Amount" FormatString="{0:d}" Width="160px" />
+            <RadzenDataGridColumn TItem="ProductItems" Context="ProductItems" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
+                <Template Context="ProductItems">
+                    <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => RemoveAdd(ProductItems))" @onclick:stopPropagation="true">
+                    </RadzenButton>
+                </Template>
+            </RadzenDataGridColumn>
         </Columns>
     </RadzenDataGrid>
 </div>
@@ -72,7 +78,7 @@
 
 @code {
     IEnumerable<ProductItems> product;
-    List<ProductItems> userProductItems = new List<ProductItems>();
+    List<ProductItems> userProductItem = new List<ProductItems>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -87,16 +93,37 @@
 
 
 
-    private void AddProduct(ProductItems item)
+    private async void AddProduct(ProductItems item)
     {
-        Console.WriteLine($"Adding Items : {item.Id}");
-        userProductItems.Add(item);
-        StateHasChanged();
-        // Adding Product
+        if (item != null)
+        {
+            userProductItem.Add(item);
+            await SaveItemsToLocalStorage();
+        }
     }
 
-    private void RemoveAdd()
+    private async void RemoveAdd(ProductItems item)
     {
-        // Remove Product
+        if (item != null)
+        {
+            userProductItem.Remove(item);
+            await SaveItemsToLocalStorage();
+        }
+    }
+
+    async Task RefreshItems()
+    {
+        userProductItem = await LoadItemsFromLocalStorage();
+    }
+
+    async Task SaveItemsToLocalStorage()
+    {
+        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "items", JsonSerializer.Serialize(userProductItem));
+    }
+
+    async Task<List<ProductItems>> LoadItemsFromLocalStorage()
+    {
+        var itemsJson = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "items");
+        return string.IsNullOrWhiteSpace(itemsJson) ? new List<ProductItems>() : JsonSerializer.Deserialize<List<ProductItems>>(itemsJson);
     }
 }
