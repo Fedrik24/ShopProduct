@@ -44,6 +44,7 @@
     <p>Testing</p>
     <p>UserHistory Purchase Data</p>
     <RadzenButton Text="Refresh" Click="@RefreshItems"></RadzenButton>
+    <RadzenButton Text="Buy" Click="@BuyItems"></RadzenButton>
     <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="5" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
                     Data="@userProductItem" TItem="ProductItems" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
         <Columns>
@@ -78,7 +79,8 @@
 
 @code {
     IEnumerable<ProductItems> product;
-    List<ProductItems> userProductItem = new List<ProductItems>();
+    List<ProductItems> userProductItem = new List<ProductItems>(); 
+    List<UserPurchase> userPurchases = new List<UserPurchase>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -87,10 +89,9 @@
 
     private async Task GetProduct()
     {
-        product = await dataService.Service<List<ProductItems>>("Product", HttpMethod.Get);
+        product = await dataService.ServiceHeaders<List<ProductItems>>("Product", HttpMethod.Get);
         StateHasChanged();
     }
-
 
 
     private async void AddProduct(ProductItems item)
@@ -99,6 +100,29 @@
         {
             userProductItem.Add(item);
             await SaveItemsToLocalStorage();
+        }
+    }
+
+    private async void BuyItems()
+    {
+        Console.WriteLine($"Buying Items");
+        for(var i = 0; i < userProductItem.Count; i++)
+        {
+            userPurchases.Add(new UserPurchase
+            {
+                Amount = userProductItem[i].Amount,
+                Price = userProductItem[i].Price,
+                ProductType = userProductItem[i].ProductType,
+                UserId = 1
+            });
+        }
+
+        foreach (var item in userPurchases)
+        {
+            if (userPurchases != null)
+            {
+                var userBuy = dataService.ServiceBody<UserPurchase>("Product", HttpMethod.Post, item);
+            }
         }
     }
 

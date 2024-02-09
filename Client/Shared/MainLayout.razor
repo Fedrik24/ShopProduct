@@ -32,7 +32,7 @@
         {
             { "userId", $"1" },
         };
-        userIdLogin = await DataService.Service<UserLoginData>("Login/Token", HttpMethod.Get, loginHeaders);
+        userIdLogin = await DataService.ServiceHeaders<UserLoginData>("Login/Token", HttpMethod.Get, loginHeaders);
         var userId = await _localstorage.GetItemAsStringAsync("userId");
         if (string.IsNullOrEmpty(userId))
         {

@@ -12,6 +12,31 @@ namespace ShopProduct.Server.Services
             this.productRepository = productRepository;
         }
 
+        public async Task<bool> InsertUserProductHistory(UserPurchase userPurchase)
+        {
+            try
+            {
+                Console.WriteLine($"Trying to insert user product purchase");
+                // check userId exist or not.
+                if (userPurchase.UserId <= 0) return false;
+                var IsInserted = await productRepository.InsertUserProductHistory(userPurchase);
+                if(IsInserted)
+                {
+                    return true;
+                }
+                return false;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Something went wrong : " + ex.ToString());
+                throw;
+            }
+            finally
+            {
+                Console.WriteLine($"Finishing Insert Purchase User History");
+            }
+        }
+
         public async Task<List<ProductItems>> ProductItems()
         {
             try

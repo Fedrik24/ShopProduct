@@ -30,7 +30,7 @@
     string userName = "admin";
     string password = "local";
 
-    public UserLoginData userIdLogin;
+    public UserLoginData userIdLogin = new UserLoginData();
     public string Token = "123";
 
 
@@ -52,7 +52,7 @@
 
         try
         {
-            UserLoginData result = await DataService.Service<UserLoginData>("Login", HttpMethod.Get,headers);
+            UserLoginData result = await DataService.ServiceHeaders<UserLoginData>("Login", HttpMethod.Get,headers);
             if (result != null)
             {
                 Console.WriteLine(result.Username, result.Password);
@@ -61,10 +61,11 @@
                     { "userId", $"{result.UserId}" },
                     { "token", $"{Token}" }
                 };
-                ResponseCode responseCode = await DataService.Service<ResponseCode>("Login", HttpMethod.Post, loginHeaders);
+                ResponseCode responseCode = await DataService.ServiceHeaders<ResponseCode>("Login", HttpMethod.Post, loginHeaders);
                 if (!string.IsNullOrEmpty(responseCode.Message))
                 {
                     await _localstorage.SetItemAsync("userId", result.UserId);
+                    userIdLogin.UserId = result.UserId;
                     NavManager.NavigateTo("/");
                 }
             }
