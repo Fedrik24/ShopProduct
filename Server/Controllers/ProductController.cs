@@ -16,7 +16,7 @@ namespace ShopProduct.Server.Controllers
         }
 
         [HttpGet]
-        private async Task<IActionResult> GetProduct()
+        public async Task<IActionResult> GetProduct()
         {
             var query = new GetItemProductQueryAsync();
             var result = await _mediator.Send(query);
