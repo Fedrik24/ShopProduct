@@ -8,5 +8,6 @@ namespace ShopProduct.Server.Services
         Task<int> GetUserId(int userId);
         Task<bool> InsertUserToken(int userId, string token);
         Task<string> GetUserToken(int userId);
+        Task<bool> Register(RegisterData registerData);
     }
 }

@@ -43,5 +43,13 @@ namespace ShopProduct.Server.Controllers
             var result = await _mediator.Send(query);
             return result;
         }
+
+        [HttpPost("Register")]
+        public async Task<IActionResult> UserRegister([FromBody] RegisterData registerData)
+        {
+            var query = new RegisterUserCommandQuery(registerData);
+            var result = await _mediator.Send(query);
+            return result;
+        }
     }
 }

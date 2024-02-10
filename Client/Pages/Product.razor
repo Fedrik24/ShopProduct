@@ -1,10 +1,14 @@
 ﻿@page "/Product"
+@using Blazored.LocalStorage
 @using Radzen
 @using ShopProduct.Client.Utility
 @using ShopProduct.Shared
 @using System.Text.Json
 @inject DataService dataService
 @inject IJSRuntime JSRuntime
+@inject ILocalStorageService _localstorage;
+@inject DataService DataService
+@inject NavigationManager NavManager
 
 <h3>Product Pages</h3>
 
@@ -81,9 +85,21 @@
     IEnumerable<ProductItems> product;
     List<ProductItems> userProductItem = new List<ProductItems>(); 
     List<UserPurchase> userPurchases = new List<UserPurchase>();
+    public UserLoginData userIdLogin;
 
     protected override async Task OnInitializedAsync()
     {
+        Dictionary<string, string> loginHeaders = new Dictionary<string, string>
+        {
+            { "userId", $"1" },
+        };
+        userIdLogin = await DataService.ServiceHeaders<UserLoginData>("Login/Token", HttpMethod.Get, loginHeaders);
+        var userId = await _localstorage.GetItemAsStringAsync("userId");
+        if (string.IsNullOrEmpty(userId))
+        {
+            NavManager.NavigateTo("/Login");
+            return;
+        }
         await GetProduct();
     }
 

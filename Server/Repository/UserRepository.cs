@@ -2,6 +2,7 @@
 using Dapper;
 using ShopProduct.Shared;
 using System.Data.Common;
+using System.Linq.Dynamic.Core.Tokenizer;
 
 namespace ShopProduct.Server.Repository
 {
@@ -55,6 +56,15 @@ namespace ShopProduct.Server.Repository
             return result;
         }
 
+        public async Task InsertUserId(string username, string password)
+        {
+            DbConnection dbConnection = dbContext.Connection;
+            DefaultTypeMap.MatchNamesWithUnderscores = true;
+            var param = new { username = username, password = password };
+            var query = @"INSERT INTO users (username, password) VALUES (@username, @password)";
+            await dbConnection.ExecuteAsync(query, param);
+        }
+
         public async Task<bool> InsertUserToken(int userId, string token)
         {
             DbConnection dbConnection = dbContext.Connection;
@@ -67,6 +77,21 @@ namespace ShopProduct.Server.Repository
             UPDATE public.users SET
             token = @token
             WHERE user_id = @user_id";
+            var result = await dbConnection.ExecuteAsync(query, param);
+            return result != 0;
+        }
+
+        public async Task<bool> Register(RegisterData register)
+        {
+            DbConnection dbConnection = dbContext.Connection;
+            DefaultTypeMap.MatchNamesWithUnderscores = true;
+            var param = new
+            {
+                username = register.Username,
+                birthday = register.BirthDay,
+                gender = (int)register.Gender
+            };
+            var query = @"INSERT INTO user_data (username, birthday, Gender) VALUES (@username, @birthday, @gender)";
             var result = await dbConnection.ExecuteAsync(query, param);
             return result != 0;
         }

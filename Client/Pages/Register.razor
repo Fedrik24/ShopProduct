@@ -1,6 +1,9 @@
 ﻿@page "/register"
 @using Radzen
+@using ShopProduct.Client.Utility
 @using ShopProduct.Shared
+@inject DataService DataService
+@inject NavigationManager NavManager
 
 
 <h3>Register</h3>
@@ -64,12 +67,17 @@
     public RegisterData registerData = new RegisterData();
     int gender = 1;
 
-    void Submit()
+    async void Submit()
     {
         Console.WriteLine($"Submit Register");
         Console.WriteLine($"BirthDay : {registerData.BirthDay}");
         Console.WriteLine($"Username : {registerData.Username}");
         Console.WriteLine($"Password : {registerData.Password}");
         Console.WriteLine($"Gender : {(Gender)gender}");
+        var result = await DataService.ServiceBody<ResponseCode>("Login/Register", HttpMethod.Post, registerData);
+        if (string.IsNullOrEmpty(result.Message))
+        {
+            NavManager.NavigateTo("/Login");
+        }
     }
 }

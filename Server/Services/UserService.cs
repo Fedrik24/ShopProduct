@@ -101,5 +101,30 @@ namespace ShopProduct.Server.Services
                 Console.WriteLine($"Finishing log");
             }
         }
+
+        public async Task<bool> Register(RegisterData registerData)
+        {
+            try
+            {
+                Console.WriteLine($"Trying to register User");
+                var inserUserData = await userRepository.Register(registerData);
+                if (inserUserData)
+                {
+                    await userRepository.InsertUserId(registerData.Username, registerData.Password);
+                    return true;
+                }
+                return false; 
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine($"Something went wrong while trying to Register Data for : {registerData.Username} " +
+                    $"Birthday : {registerData.BirthDay} gender : {registerData.Gender}");
+                throw;
+            }
+            finally
+            {
+                Console.WriteLine($"Finishing Register Data");
+            }
+        }
     }
 }
