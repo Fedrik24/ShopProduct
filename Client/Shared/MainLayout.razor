@@ -13,7 +13,7 @@
 
     <main>
         <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+            <RadzenText Text="@UserId"></RadzenText>
         </div>
 
         <article class="content px-4">
@@ -23,25 +23,18 @@
 </div>
 
 @code{
-    public UserLoginData userIdLogin;
+    public string UserId { get; set; }
 
-    // Get User, If user hasn't log'in, move back to login.html
     protected override async Task OnInitializedAsync()
     {
-        Dictionary<string, string> loginHeaders = new Dictionary<string, string>
-        {
-            { "userId", $"1" },
-        };
-        userIdLogin = await DataService.ServiceHeaders<UserLoginData>("Login/Token", HttpMethod.Get, loginHeaders);
-        var userId = await _localstorage.GetItemAsStringAsync("userId");
-        if (string.IsNullOrEmpty(userId))
+        UserId = await _localstorage.GetItemAsStringAsync("userId");
+        if (string.IsNullOrEmpty(UserId))
         {
             NavManager.NavigateTo("/Login");
         }
         else
         {
             await _localstorage.RemoveItemAsync($"userId");
-            NavManager.NavigateTo("/Login");
         }
     }
 }

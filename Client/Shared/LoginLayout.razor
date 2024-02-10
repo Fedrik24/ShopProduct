@@ -1,12 +1,27 @@
-﻿@inherits LayoutComponentBase
+﻿@using Radzen
+@inherits LayoutComponentBase
 
 <div class="page">
     <main>
-        <article class="content px-4">
-            @Body
-        </article>
+        <RadzenCard class="center-screen" >
+            <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Wrap="FlexWrap.Wrap" >
+                @Body
+            </RadzenStack>
+        </RadzenCard>
     </main>
 </div>
+
+
+<style>
+    .center-screen
+    {
+        display:flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        min-height: 100vh;
+    }
+</style>
 
 @code {
 
