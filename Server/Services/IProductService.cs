@@ -6,5 +6,6 @@ namespace ShopProduct.Server.Services
     {
         Task<List<ProductItems>> ProductItems();
         Task<bool> InsertUserProductHistory(UserPurchase userPurchase);
+        Task<bool> CalculateCurrency(int userId, int itemType, int price);
     }
 }

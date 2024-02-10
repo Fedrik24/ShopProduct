@@ -12,11 +12,45 @@ namespace ShopProduct.Server.Services
             this.productRepository = productRepository;
         }
 
+        public async Task<bool> CalculateCurrency(int userId, int itemType, int price)
+        {
+            try
+            {
+                int total = 0;
+                if (userId <= 0) return false;
+                
+                int userCurrency = await productRepository.GetUserCurrency(userId);
+
+                if (userCurrency < price) return false;
+
+                bool checkProductType = await productRepository.IsProductTypeAvaible(itemType);
+
+                if (!checkProductType) return false;
+
+                total = userCurrency - price;
+
+                var result = await productRepository.UpdateUserCurrency(userId, total);
+                
+                if (!result) return false;
+
+                return true;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine($"Something went wrong while trying to calculate : {ex}");
+                throw;
+            }
+            finally
+            {
+                Console.WriteLine("Finishing Calculate User Currency");
+            }
+        }
+
         public async Task<bool> InsertUserProductHistory(UserPurchase userPurchase)
         {
             try
             {
-                Console.WriteLine($"Trying to insert user product purchase");
+                Console.WriteLine($"Trying to insert user product purchase for userId : {userPurchase.UserId}");
                 // check userId exist or not.
                 if (userPurchase.UserId <= 0) return false;
                 var IsInserted = await productRepository.InsertUserProductHistory(userPurchase);

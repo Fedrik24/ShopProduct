@@ -17,7 +17,6 @@
 </div>
 
 <div>
-    <h5>TESTING RADZEN</h5>
     @if(product == null)
     {
         <p>Loading...</p>
@@ -85,7 +84,7 @@
     IEnumerable<ProductItems> product;
     List<ProductItems> userProductItem = new List<ProductItems>(); 
     List<UserPurchase> userPurchases = new List<UserPurchase>();
-    public UserLoginData userIdLogin;
+    public string userId = String.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -93,8 +92,7 @@
         {
             { "userId", $"1" },
         };
-        userIdLogin = await DataService.ServiceHeaders<UserLoginData>("Login/Token", HttpMethod.Get, loginHeaders);
-        var userId = await _localstorage.GetItemAsStringAsync("userId");
+        userId = await _localstorage.GetItemAsStringAsync("userId");
         if (string.IsNullOrEmpty(userId))
         {
             NavManager.NavigateTo("/Login");
@@ -121,7 +119,6 @@
 
     private async void BuyItems()
     {
-        Console.WriteLine($"Buying Items");
         for(var i = 0; i < userProductItem.Count; i++)
         {
             userPurchases.Add(new UserPurchase
@@ -129,8 +126,9 @@
                 Amount = userProductItem[i].Amount,
                 Price = userProductItem[i].Price,
                 ProductType = userProductItem[i].ProductType,
-                UserId = 1
+                UserId = int.Parse(userId)
             });
+            RemoveAdd(userProductItem[i]);
         }
 
         foreach (var item in userPurchases)
@@ -140,6 +138,7 @@
                 var userBuy = dataService.ServiceBody<UserPurchase>("Product", HttpMethod.Post, item);
             }
         }
+
     }
 
     private async void RemoveAdd(ProductItems item)

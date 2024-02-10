@@ -19,6 +19,16 @@ namespace ShopProduct.Server.Handler.CommandQuery
         public async Task<IActionResult> Handle(UserPurchaseItemsCommandQuery request, CancellationToken cancellationToken)
         {
             ResponseCode response = new ResponseCode();
+
+            var isAfforToBuy = await productService.CalculateCurrency(request.UserPurchase.UserId, request.UserPurchase.ProductType, request.UserPurchase.Price);
+
+            if (!isAfforToBuy)
+            {
+                response.Message = $"user : {request.UserPurchase.UserId} cannot afford to buy";
+                response.Response = 204;
+                return new OkObjectResult(response);
+            }
+
             var result = await productService.InsertUserProductHistory(request.UserPurchase);
 
             if (result)

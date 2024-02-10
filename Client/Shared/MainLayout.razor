@@ -13,10 +13,7 @@
 
     <main>
         <div class="top-row px-4">
-            @if (!string.IsNullOrEmpty(UserId) && loginData != null)
-            {
-                <p>Username : @loginData.Username</p>
-            }
+            <RadzenButton Text="Logout" Click="@Logout" />
         </div>
 
         <article class="content px-4">
@@ -40,8 +37,13 @@
         else
         {
             GetUsername();
-            await _localstorage.RemoveItemAsync($"userId");
         }
+    }
+
+    async void Logout()
+    {
+        NavManager.NavigateTo("/Login");
+        await _localstorage.RemoveItemAsync($"userId");
     }
 
     async void GetUsername()
