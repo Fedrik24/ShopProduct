@@ -28,10 +28,10 @@ namespace ShopProduct.Server.Controllers
             return result;
         }
 
-        [HttpGet("token")]
-        public async Task<IActionResult> GetToken([FromHeader(Name = "userId")]int userId)
+        [HttpGet("user")]
+        public async Task<IActionResult> GetUser([FromHeader(Name = "userId")]int userId)
         {
-            var query = new GetTokenQuery(userId);
+            var query = new GetUserQuery(userId);
             var result = await _mediator.Send(query);
             return result;
         }

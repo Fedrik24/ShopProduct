@@ -8,7 +8,7 @@ namespace ShopProduct.Server.Repository
         Task<bool> CheckUserPassword(string password);
         Task<int> GetUserId(int userId);
         Task<bool> InsertUserToken(int userId, string token);
-        Task<string> GetUserToken(int userId);
+        Task<UserLoginData> GetUserByUserId(int userId);
         Task<bool> Register(RegisterData register);
         Task InsertUserId(string username, string password);
     }

@@ -13,7 +13,10 @@
 
     <main>
         <div class="top-row px-4">
-            <RadzenText Text="@UserId"></RadzenText>
+            @if (!string.IsNullOrEmpty(UserId) && loginData != null)
+            {
+                <p>Username : @loginData.Username</p>
+            }
         </div>
 
         <article class="content px-4">
@@ -24,6 +27,8 @@
 
 @code{
     public string UserId { get; set; }
+    public string Username { get; set; }
+    public UserLoginData loginData = new UserLoginData();
 
     protected override async Task OnInitializedAsync()
     {
@@ -34,7 +39,20 @@
         }
         else
         {
+            GetUsername();
             await _localstorage.RemoveItemAsync($"userId");
         }
+    }
+
+    async void GetUsername()
+    {
+        Dictionary<string, string> loginHeaders = new Dictionary<string, string>
+        {
+            { "userId", $"{UserId}" },
+        };
+        loginData = await DataService.ServiceHeaders<UserLoginData>("Login/user", HttpMethod.Get, loginHeaders);
+        Username = loginData.Username;
+        Console.WriteLine($"loginData : {loginData.Username}");
+        
     }
 }

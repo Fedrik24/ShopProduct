@@ -62,15 +62,15 @@ namespace ShopProduct.Server.Services
             }
         }
 
-        public async Task<string> GetUserToken(int userId)
+        public async Task<UserLoginData> GetUserByUserId(int userId)
         {
             try
             {
                 Console.WriteLine($"Trying to get userId :{userId} Token");
-                var result = await userRepository.GetUserToken(userId);
-                if (string.IsNullOrEmpty(result))
+                var result = await userRepository.GetUserByUserId(userId);
+                if (result == null)
                 {
-                    return String.Empty;
+                    return new UserLoginData();
                 }
                 return result;
             }

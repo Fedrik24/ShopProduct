@@ -46,13 +46,13 @@ namespace ShopProduct.Server.Repository
             return result;
         }
 
-        public async Task<string> GetUserToken(int userId)
+        public async Task<UserLoginData> GetUserByUserId(int userId)
         {
             DbConnection dbConnection = dbContext.Connection;
             DefaultTypeMap.MatchNamesWithUnderscores = true;
             var param = new { user_id = userId };
-            var query = @"SELECT token FROM users WHERE user_id = @user_id";
-            var result = await dbConnection.QueryFirstAsync<string>(query, param);
+            var query = @"SELECT * FROM users WHERE user_id = @user_id";
+            var result = await dbConnection.QueryFirstAsync<UserLoginData>(query, param);
             return result;
         }
 
