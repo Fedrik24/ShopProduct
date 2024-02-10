@@ -1,0 +1,75 @@
+﻿@page "/register"
+@using Radzen
+@using ShopProduct.Shared
+
+
+<h3>Register</h3>
+
+<RadzenTemplateForm Data="@registerData">
+    <RadzenRow Gap="2rem" Class="rz-p-0 rz-p-lg-4">
+        <RadzenColumn Size="12" SizeMD="6">
+            <RadzenStack>
+                <RadzenFieldset Text="Register">
+                    <RadzenStack  Gap="1rem">
+                        <RadzenRow AlignItems="AlignItems.Center">
+                            <RadzenColumn Size="12" SizeMD="4">
+                                <RadzenLabel Text="Username" Component="Username" />
+                            </RadzenColumn>
+                            <RadzenColumn Size="12" SizeMD="4">
+                                <RadzenTextBox Style="width: 100%;" Name="Username" @bind-value="registerData.Username" />
+                            </RadzenColumn>
+                        </RadzenRow>
+                        <RadzenRow AlignItems="AlignItems.Center">
+                            <RadzenColumn Size="12" SizeMD="4">
+                                <RadzenLabel Text="Password" Component="Password" />
+                            </RadzenColumn>
+                            <RadzenColumn Size="12" SizeMD="4">
+                                <RadzenTextBox Style="width: 100%;" Name="Password" @bind-value="registerData.Password" />
+                            </RadzenColumn>
+                            <RadzenRow AlignItems="AlignItems.Center">
+                                <RadzenColumn Size="12" SizeMD="4">
+                                    <RadzenLabel Text="BirthDay" Component="BirthDay" />
+                                </RadzenColumn>
+                                <RadzenColumn Size="12" SizeMD="8">
+                                    <RadzenDatePicker Style="width: 100%;" Name="BirthDay" @bind-Value="registerData.BirthDay" />
+                                </RadzenColumn>
+                            </RadzenRow>
+                            <RadzenRow AlignItems="AlignItems.Center">
+                                <RadzenColumn Size="12" SizeMD="4">
+                                    <RadzenLabel Text="Gender" Component="Gender" />
+                                </RadzenColumn>
+                                <RadzenColumn Size="12" SizeMD="8">
+                                    <RadzenRadioButtonList Value=@gender TValue="int" Change=@(args => gender = args) class="mb-5">
+                                        <Items>
+                                            <RadzenRadioButtonListItem Text="Male" Value="1" />
+                                            <RadzenRadioButtonListItem Text="Female" Value="2" />
+                                        </Items>
+                                    </RadzenRadioButtonList>
+                                </RadzenColumn>
+                            </RadzenRow>
+                        </RadzenRow>
+                    </RadzenStack>
+                </RadzenFieldset>
+            </RadzenStack>
+        </RadzenColumn>
+    </RadzenRow>
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1rem" Class="rz-mt-8 rz-mb-4">
+        <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.Large" Icon="save" Text="Submit" Click="@Submit" />
+    </RadzenStack>
+</RadzenTemplateForm>
+
+
+@code {
+
+    public RegisterData registerData = new RegisterData();
+    int gender = 1;
+
+    void Submit()
+    {
+        Console.WriteLine($"Submit Register");
+        Console.WriteLine($"BirthDay : {registerData.BirthDay}");
+        Console.WriteLine($"Username : {registerData.Username}");
+        Console.WriteLine($"Password : {registerData.Password}");
+        Console.WriteLine($"Gender : {(Gender)gender}");
+    }
+}

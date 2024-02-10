@@ -13,17 +13,9 @@
 
 <PageTitle>Login</PageTitle>
 
-<h3>Login Test</h3>
-
-@if (userIdLogin != null)
-{
-    <h4>USER ID : @userIdLogin.Username</h4>
-}
-
-<RadzenButton Text="Hello world! " />
 
 <RadzenLogin AllowRegister="true" AllowResetPassword="true"
-             Login=@OnLogin />
+             Login=@OnLogin Register=@OnRegister />
 
 @code 
 {
@@ -40,10 +32,13 @@
 
     }
 
+    void OnRegister()
+    {
+        NavManager.NavigateTo("/register");
+    }
 
     private async void LoginAuthenticate(string username, string password)
     {
-        Console.WriteLine($"LOGIN AUTHENTICATE");
         Dictionary<string, string> headers = new Dictionary<string, string>
         { 
             { "username", $"{username}" },
